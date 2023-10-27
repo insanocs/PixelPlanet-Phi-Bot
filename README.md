@@ -3,6 +3,8 @@
 
  Install Python 3.10
 
+ Create a "factions" folder, GitHub doesn't let me add blank folders for some reason
+
  Download the packages needed for the bot:
  pip install -r requirements.txt
  
