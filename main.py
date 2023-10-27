@@ -9,24 +9,35 @@ import time
 
 #merda ipnicial
 print(f"[CONSOLE] Starting.")
-print(f"[CONSOLE] List of factions: {os.listdir('factions/')}.")
+print(f"[CONSOLE] List of factions: not enabled")
 #configuraçoes
 
 config = ConfigParser()
 config.read(r'config.ini')
 try:
-    bot_name = config['BOTCONFIG']['name']
-    token = config['BOTCONFIG']['token']
-    auth_id = config['BOTCONFIG']['auth_id']
-    prefix = config['BOTCONFIG']['prefix']
-except:
-    print('Error parsing config file')
-    exit()
+  token = os.environ['TOKEN']
+  print('TOKEN found in environment secrets')
+except KeyError:
+  token = config['BOTCONFIG']['token']
+  if len(token) <= 10:
+    print(f'[ERROR] IMPROPER TOKEN, CONFIGURE IT IN CONFIG.INI')
+  else:
+    print(f'[CONSOLE] TOKEN has been found ')
+  
+except Exception as e:
+  print(f'TOKEN could not be found anywhere. ERROR: {e}')
 
+try:
+  bot_name = config['BOTCONFIG']['name']
+  auth_id = config['BOTCONFIG']['auth_id']
+  prefix = config['BOTCONFIG']['prefix']
+except:
+  print('Error parsing config file')
+  exit()
 #config do bote
 #disnake presence. se o bot for banido por causa de erros, mudar isso pra uma task async
 
-class MyClient(disnake.ext.commands.Bot):
+class MyClient(disnake.ext.commands.InteractionBot):
 
     async def on_ready(self):
         print('-'*10)
@@ -69,7 +80,7 @@ class MyClient(disnake.ext.commands.Bot):
 intents = disnake.Intents.default()
 intents.members = False
 intents.message_content = False
-client = MyClient(command_prefix=prefix,intents=intents)
+client = MyClient(intents=intents)
 
 print('[CONSOLE] All cogs loaded.')
 
@@ -93,7 +104,10 @@ for extension in initial_extensions:
         client.load_extension(extension)
 
 try:
-    client.run(token)
+    if len(token) <= 10:
+      raise Exception
+    else:
+      client.run(token)
 except Exception as e:
     print(f"Error e: {e}, killing container")
     os.system("kill 1")
