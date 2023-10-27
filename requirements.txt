@@ -1,0 +1,8 @@
+Pillow==9.4.0
+replit==3.2.4
+urllib3==1.26.12
+websocket==0.2.1
+disnake==2.7.0
+Flask==2.2.0
+httpx==0.23.3
+numpy==1.22.2
